@@ -1,0 +1,110 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
+        xmlns:local="clr-namespace:Dashboard1"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls" x:Class="Dashboard1.ListView"
+        mc:Ignorable="d"
+        Title="ListView" WindowState="Maximized" WindowStyle="SingleBorderWindow" >
+    <!-- WindowState="Maximized" WindowStyle="SingleBorderWindow" -->
+    <Grid Margin="0,0,2,0">
+        <StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBox x:Name="txtBuscar" Grid.Column="0" Grid.Row="0" materialDesign:HintAssist.Hint="Buscar..!" KeyDown="TxtBuscar_KeyDown"  TextChanged="TxtBuscar_TextChanged" HorizontalAlignment="Left" Width="331" RenderTransformOrigin="1.714,-0.83" Margin="23,1,0,10"/>
+                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
+                    <Button x:Name="btnMNuevo" Background="ForestGreen" BorderBrush="Green" Click="Button_Click" Width="94" Height="Auto" Margin="0,10">
+                        <DockPanel>
+                            <materialDesign:PackIcon Kind="search"/>
+                            <TextBlock Text="Buscar" TextAlignment="Left"/>
+                        </DockPanel>
+                    </Button>
+                    <!--<Button x:Name="btnMGuardar" Width="60" Height="40" Grid.Column="1" Grid.Row="0">
+                        <DockPanel>
+                            
+                            <TextBlock Text="Guardar" Margin="0"/>
+                        </DockPanel>
+                    </Button>
+                    <Button x:Name="btnMEliminar" Width="60" Height="40" Grid.Column="1" Grid.Row="0">
+                        <DockPanel>
+                            
+                            <TextBlock Text="Eliminar"/>
+                        </DockPanel>
+                    </Button>-->
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="1">
+                    <CheckBox x:Name="chkTodos" Grid.Column="0" Grid.Row="0" Click="CheckBox_Click" Width="80">TODOS</CheckBox>
+                    <Button x:Name="btnImprimirTodo" Click="BtnImprimirTodo_Click" HorizontalAlignment="Right" Width="91" Height="40">
+                        <DockPanel RenderTransformOrigin="0.5,0.5">
+                            <materialDesign:PackIcon Kind="Printer"/>
+                            <TextBlock Text="Imprimir" Margin="0"/>
+                        </DockPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+        <!--<ScrollViewer HorizontalScrollBarVisibility="Auto" PreviewMouseWheel="DgHabladores_PreviewMouseWheel" HorizontalAlignment="Center"  Margin="10,128,10,0" >
+        </ScrollViewer>-->
+        <DataGrid  RowDetailsVisibilityMode="Collapsed" x:Name="dgHabladores" AutoGenerateColumns="False" IsReadOnly="True" IsTextSearchCaseSensitive="True" Margin="10,109,10,-109">
+            <DataGrid.RowStyle>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <EventSetter Event="MouseDoubleClick" Handler="RowDoubleClick"/>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn Header="Act/Impr" IsReadOnly="False" Binding="{Binding PorImprimir}"/>
+                <DataGridTextColumn Header="Código"  Binding="{Binding Codigo}"/>
+                <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}"  />
+                <DataGridTextColumn Header="Precio" Binding="{Binding Precio}" />
+                <DataGridTextColumn Header="Actualizado el"  Binding="{Binding Fecha}" />
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Click="PrintHablador">
+                                <DockPanel>
+                                    <materialDesign:PackIcon Kind="Printer"/>
+                                    <TextBlock Text="Imprimir" TextAlignment="Left"/>
+                                </DockPanel>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <DockPanel Background="GhostWhite">
+                        <!--<Image DockPanel.Dock="Left" Source="{Binding ImageUrl}" Height="64" Margin="10" />-->
+                        <Grid Margin="0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Text="Barra: " FontWeight="Bold" />
+                            <TextBlock Text="{Binding Codigo_barra}" Grid.Column="1" />
+                            <TextBlock Text="Descripcion: " FontWeight="Bold" Grid.Row="1" />
+                            <TextBlock Text="{Binding Descripcion}" Grid.Column="1" Grid.Row="1" />
+                            <TextBlock Text="Esta Impreso: " FontWeight="Bold" Grid.Row="2" />
+                            <TextBlock Text="{Binding PorImprimir, StringFormat=d}" Grid.Column="1" Grid.Row="2" />
+                        </Grid>
+                    </DockPanel>
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
+        </DataGrid>
+
+    </Grid>
+</Window>

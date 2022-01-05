@@ -1,0 +1,12 @@
+﻿<Window x:Class="Dashboard1.LoadingView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Dashboard1"
+        mc:Ignorable="d"
+        Title="Loading..." Height="321.429" Width="326.242" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None">
+    <Grid>
+        <Image x:Name="loading" RenderOptions.BitmapScalingMode="HighQuality" Stretch="Fill" VerticalAlignment="Stretch" HorizontalAlignment="Center" Source="http://100.100.2.131:8300/Images/loading.gif"  Effect="{DynamicResource MaterialDesignShadowDepth3}"/>
+    </Grid>
+</Window>

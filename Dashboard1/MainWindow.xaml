@@ -1,0 +1,960 @@
+﻿<Window x:Class="Dashboard1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Dashboard1"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
+        xmlns:MetroChart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart"
+        mc:Ignorable="d" Height="600" Width="1024" WindowStartupLocation="CenterScreen" WindowStyle="None">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <Style x:Key="ScrollThumbs" TargetType="{x:Type Thumb}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Thumb}">
+                            <Grid x:Name="Grid">
+                                <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto" Fill="Transparent" />
+                                <Border x:Name="Rectangle1" CornerRadius="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto"  Background="{TemplateBinding Background}" />
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="Tag" Value="Horizontal">
+                                    <Setter TargetName="Rectangle1" Property="Width" Value="Auto" />
+                                    <Setter TargetName="Rectangle1" Property="Height" Value="7" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!--ScrollBars-->
+            <Style x:Key="{x:Type ScrollBar}" TargetType="{x:Type ScrollBar}">
+                <Setter Property="Stylus.IsFlicksEnabled" Value="false" />
+                <Setter Property="Foreground" Value="LightGray" />
+                <Setter Property="Background" Value="DarkGray" />
+                <Setter Property="Width" Value="10" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ScrollBar}">
+                            <Grid x:Name="GridRoot" Width="19" Background="{x:Null}">
+                                <Track x:Name="PART_Track" Grid.Row="0" IsDirectionReversed="true" Focusable="false">
+                                    <Track.Thumb>
+                                        <Thumb x:Name="Thumb" Background="{TemplateBinding Foreground}" Style="{DynamicResource ScrollThumbs}" />
+                                    </Track.Thumb>
+                                    <Track.IncreaseRepeatButton>
+                                        <RepeatButton x:Name="PageUp" Command="ScrollBar.PageDownCommand" Opacity="0" Focusable="false" />
+                                    </Track.IncreaseRepeatButton>
+                                    <Track.DecreaseRepeatButton>
+                                        <RepeatButton x:Name="PageDown" Command="ScrollBar.PageUpCommand" Opacity="0" Focusable="false" />
+                                    </Track.DecreaseRepeatButton>
+                                </Track>
+                            </Grid>
+
+                            <ControlTemplate.Triggers>
+                                <Trigger SourceName="Thumb" Property="IsMouseOver" Value="true">
+                                    <Setter Value="{DynamicResource ButtonSelectBrush}" TargetName="Thumb" Property="Background" />
+                                </Trigger>
+                                <Trigger SourceName="Thumb" Property="IsDragging" Value="true">
+                                    <Setter Value="{DynamicResource DarkBrush}" TargetName="Thumb" Property="Background" />
+                                </Trigger>
+
+                                <Trigger Property="IsEnabled" Value="false">
+                                    <Setter TargetName="Thumb" Property="Visibility" Value="Collapsed" />
+                                </Trigger>
+                                <Trigger Property="Orientation" Value="Horizontal">
+                                    <Setter TargetName="GridRoot" Property="LayoutTransform">
+                                        <Setter.Value>
+                                            <RotateTransform Angle="-90" />
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter TargetName="PART_Track" Property="LayoutTransform">
+                                        <Setter.Value>
+                                            <RotateTransform Angle="-90" />
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="Width" Value="Auto" />
+                                    <Setter Property="Height" Value="12" />
+                                    <Setter TargetName="Thumb" Property="Tag" Value="Horizontal" />
+                                    <Setter TargetName="PageDown" Property="Command" Value="ScrollBar.PageLeftCommand" />
+                                    <Setter TargetName="PageUp" Property="Command" Value="ScrollBar.PageRightCommand" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+
+        <Grid Grid.Column="1" Grid.Row="1" Background="#FFCFCFCF">
+            <TabControl TabStripPlacement="Left">
+                <TabControl.Resources>
+                    <Style TargetType="{x:Type TabItem}">
+                        <Setter Property="HeaderTemplate">
+                            <Setter.Value>
+                                <DataTemplate>
+                                    <ContentPresenter Content="{TemplateBinding Content}">
+                                        <ContentPresenter.LayoutTransform>
+                                            <RotateTransform Angle="270" />
+                                        </ContentPresenter.LayoutTransform>
+                                    </ContentPresenter>
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Padding" Value="3" />
+                    </Style>
+                </TabControl.Resources>
+                <TabItem Header="Habladores">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="112*"/>
+                            <RowDefinition Height="15*"/>
+                            <RowDefinition Height="429*"/>
+                        </Grid.RowDefinitions>
+                        <ScrollViewer Grid.RowSpan="3">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="132"/>
+                                    <RowDefinition Height="10"/>
+                                    <RowDefinition Height="45"/>
+                                    <RowDefinition Height="13"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid Grid.Column="0" Grid.RowSpan="4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="30*"/>
+                                        <ColumnDefinition Width="103*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Rectangle Margin="20,84,20,26" Fill="White" RadiusY="10" RadiusX="10" Grid.ColumnSpan="2" >
+                                        <Rectangle.Effect>
+                                            <DropShadowEffect BlurRadius="20" Color="#FFDEDEDE" RenderingBias="Quality" ShadowDepth="1"/>
+                                        </Rectangle.Effect>
+                                    </Rectangle>
+                                    <Grid Margin="25,40" Height="120" Grid.ColumnSpan="2">
+                                        <TextBox x:Name="txtBuscar" CharacterCasing="Upper" Grid.Column="0" Grid.Row="0" materialDesign:HintAssist.Hint="Buscar..!" KeyDown="TxtBuscar_KeyDown"  TextChanged="TxtBuscar_TextChanged" HorizontalAlignment="Left" Width="196" RenderTransformOrigin="1.714,-0.83" Margin="10,62,0,35"/>
+
+
+                                        <Button x:Name="btnMNuevo" Background="ForestGreen" BorderBrush="Green" Click="Button_Click" Width="104" Height="Auto" Grid.Row="0" Margin="56,99,56,-5">
+                                            <DockPanel>
+                                                <materialDesign:PackIcon Kind="search"/>
+                                                <TextBlock Text="Buscar" FontSize="12" TextAlignment="Left"/>
+                                            </DockPanel>
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                                <Grid Grid.Column="1" Grid.RowSpan="4">
+                                    <Rectangle Margin="20,84,20,26" Fill="White" RadiusY="10" RadiusX="10" >
+                                        <Rectangle.Effect>
+                                            <DropShadowEffect BlurRadius="20" Color="#FFDEDEDE" RenderingBias="Quality" ShadowDepth="1"/>
+                                        </Rectangle.Effect>
+                                    </Rectangle>
+                                    <Grid Margin="25" Height="120">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="17*"/>
+                                            <RowDefinition Height="7*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Width="35" Height="50" Background="#FF41A43C" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="26,44,0,0" Grid.RowSpan="2">
+                                            <Grid.Effect>
+                                                <DropShadowEffect BlurRadius="20" Color="#FFECECEC" RenderingBias="Quality" ShadowDepth="1"/>
+                                            </Grid.Effect>
+                                            <materialDesign:PackIcon Kind="Store" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="5" Foreground="White" Width="20" Height="20"/>
+                                        </Grid>
+                                        <CheckBox x:Name="chkActTodos" Grid.Column="0" Grid.Row="1" Click="BtnActualizaTodo_Click" Checked="chkTodos_Checked" Margin="0,14,117,0" Content="Act. Todos" HorizontalAlignment="Right" Width="89"/>
+                                        <Button x:Name="btnActualizaTodo" Click="BtnActualizaTodo_Click" HorizontalAlignment="Right" Width="107" Height="Auto" Margin="0,14, 15,-4" Grid.Row="1">
+                                            <DockPanel>
+                                                <materialDesign:PackIcon Kind="Reload"/>
+                                                <TextBlock Text="Actualizar" FontSize="12" Margin="0" Width="59"/>
+                                            </DockPanel>
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                                <Grid Grid.Column="2" Margin="0,27,0,0" Grid.RowSpan="4">
+                                    <Rectangle Margin="20,57,20,26" Fill="White" RadiusY="10" RadiusX="10" >
+                                        <Rectangle.Effect>
+                                            <DropShadowEffect BlurRadius="20" Color="#FFDEDEDE" RenderingBias="Quality" ShadowDepth="1"/>
+                                        </Rectangle.Effect>
+                                    </Rectangle>
+                                    <Grid Margin="25" Height="120">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="14*"/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid Width="35" Height="50" Background="#FFCF1F1F" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="26,30,0,0">
+                                            <Grid.Effect>
+                                                <DropShadowEffect BlurRadius="20" Color="#FFECECEC" RenderingBias="Quality" ShadowDepth="1"/>
+                                            </Grid.Effect>
+                                            <materialDesign:PackIcon Kind="InformationOutline" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="5" Foreground="White" Width="20" Height="20"/>
+                                        </Grid>
+                                        <CheckBox x:Name="chkTodos" Grid.Column="0" Grid.Row="0" Click="CheckBox_Click" Checked="chkTodos_Checked" Margin="0,80,-10,2" Content="Imp. Todos" HorizontalAlignment="Right" Width="216"/>
+                                        <Button x:Name="btnImprimirTodo" Click="BtnImprimirTodo_Click" HorizontalAlignment="Right" Width="107" Height="Auto" Margin="0,86,15,2">
+                                            <DockPanel>
+                                                <materialDesign:PackIcon Kind="Printer"/>
+                                                <TextBlock Text="Imprimir" FontSize="12" Margin="0"/>
+                                            </DockPanel>
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+
+                                <Grid Grid.Row="4" Grid.RowSpan="2" Grid.ColumnSpan="3" HorizontalAlignment="Center" Width="779" Height="510" Margin="-5,0">
+
+                                    <DataGrid  RowDetailsVisibilityMode="Collapsed" x:Name="dgHabladores" AutoGenerateColumns="False" AlternatingRowBackground="#EEEEEE" IsReadOnly="True" IsTextSearchCaseSensitive="True" SelectionChanged="dgHabladores_SelectionChanged" Margin="10,0">
+                                        <DataGrid.RowStyle>
+                                            <Style TargetType="{x:Type DataGridRow}">
+                                                <EventSetter Event="MouseDoubleClick" Handler="RowDoubleClick"/>
+                                            </Style>
+                                        </DataGrid.RowStyle>
+                                        <DataGrid.Columns>
+                                            <DataGridCheckBoxColumn Header="Act/Impr" IsReadOnly="True" Binding="{Binding PorImprimir}"/>
+                                            <DataGridTextColumn Header="Código"  Binding="{Binding Codigo}"/>
+                                            <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}"  />
+                                            <DataGridTextColumn Header="Precio" Binding="{Binding Precio}" />
+                                            <DataGridTextColumn Header="Actualizado el"  Binding="{Binding Fecha}" />
+                                            <DataGridTemplateColumn>
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Button Click="PrintHablador">
+                                                            <DockPanel>
+                                                                <materialDesign:PackIcon Kind="Printer"/>
+                                                                <TextBlock Text="Imprimir" TextAlignment="Left"/>
+                                                            </DockPanel>
+                                                        </Button>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                        <DataGrid.RowDetailsTemplate>
+                                            <DataTemplate>
+                                                <DockPanel Background="GhostWhite">
+                                                    <Image DockPanel.Dock="Left" Source="{Binding ImageUrl}" Height="64" Margin="10" />
+                                                    <Grid Margin="0,10">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="*" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto" />
+                                                            <RowDefinition Height="Auto" />
+                                                            <RowDefinition Height="Auto" />
+                                                        </Grid.RowDefinitions>
+
+                                                        <TextBlock Text="Barra: " FontWeight="Bold" />
+                                                        <TextBlock Text="{Binding Codigo_barra}" Grid.Column="1" />
+                                                        <TextBlock Text="Descripcion: " FontWeight="Bold" Grid.Row="1" />
+                                                        <TextBlock Text="{Binding Descripcion}" Grid.Column="1" Grid.Row="1" />
+                                                        <TextBlock Text="Detalles: " FontWeight="Bold" Grid.Row="2" />
+                                                        <TextBlock Text="{Binding PorImprimir}" Grid.Column="1" Grid.Row="2" />
+                                                    </Grid>
+                                                </DockPanel>
+                                            </DataTemplate>
+                                        </DataGrid.RowDetailsTemplate>
+                                    </DataGrid>
+
+
+                                </Grid>
+                            </Grid>
+                        </ScrollViewer>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Ficha Producto">
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="4*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="120"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Column="0">
+                            <Rectangle Margin="16,9,10,46" Fill="White" RadiusY="10" RadiusX="10" >
+                                <Rectangle.Effect>
+                                    <DropShadowEffect BlurRadius="20" Color="#FFDEDEDE" RenderingBias="Quality" ShadowDepth="1"/>
+                                </Rectangle.Effect>
+                            </Rectangle>
+                            <Grid Grid.Row="0" Margin="20,20, 10, 0" Height="120" Grid.RowSpan="2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="120"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="4*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="txtBuscarProd" CharacterCasing="Upper" Grid.Row="0" materialDesign:HintAssist.Hint="Buscar..!" KeyDown="TxtBuscar_KeyDown"  TextChanged="TxtBuscar_TextChanged" HorizontalAlignment="Left" Width="199" RenderTransformOrigin="1.714,-0.83" Margin="11,6,60,91"/>
+                                <Button x:Name="btnMNuevoProd" Background="ForestGreen" BorderBrush="Green" Click="Button_Click" Height="Auto" Grid.Row="0" Margin="175,5,15,92">
+                                    <DockPanel>
+                                        <materialDesign:PackIcon Kind="search" Width="12"/>
+                                        <TextBlock FontSize="12" TextAlignment="Right"/>
+                                    </DockPanel>
+                                </Button>
+                            </Grid>
+                            <Grid Grid.Row="1" Margin="0,90,0,-420" Grid.RowSpan="2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="450"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid Margin="10,20,10,0" Height="400" Grid.ColumnSpan="2">
+
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid Grid.Column="1" Margin="0,0,0,0" Grid.RowSpan="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="670"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0">
+                                <materialDesign:Card
+                                        Background="#FF008506"
+                                        Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Margin="13,9,53,123">
+                                    <Grid>
+                                        <TextBlock
+                                              Grid.Row="0"
+                                                FontWeight="Bold"
+                                              Margin="16 10 16 0"
+                                              Style="{StaticResource MaterialDesignHeadline5TextBlock}" Grid.RowSpan="2">
+                                            Datos Producto
+                                        </TextBlock>
+                                        <Separator
+                                              Grid.Row="0"
+                                                Margin="0,40,0,470"
+                                              Style="{StaticResource MaterialDesignLightSeparator}" Background="#FFF7F7F7" />
+                                        <Grid Grid.Column="0" Grid.RowSpan="2" Width="420" Margin="10 0 10 0">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="auto"/>
+                                                <RowDefinition Height="auto"/>
+                                                <RowDefinition Height="auto"/>
+                                                <RowDefinition Height="auto"/>
+                                                <RowDefinition Height="auto"/>
+                                                <RowDefinition Height="auto"/>
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.RowSpan="3">
+                                                <TextBlock Background="Transparent" 
+                                                     Grid.Row="0"
+                                                     Name="alertbDesc"
+                                                     Margin="10 60 0 0"
+                                                     FontWeight="Bold"
+                                                     Text="Codigo: "
+                                                     TextWrapping="Wrap"
+                                                     FontSize="12"></TextBlock>
+                                                <TextBox
+                                                      Grid.Row="0"
+                                                      x:Name="txtbCodP"
+                                                      Margin="20 0 40 0"
+                                                      IsReadOnly="True"
+                                                      materialDesign:HintAssist.Hint=" " Background="Transparent" CaretBrush="White" SelectionBrush="White" BorderBrush="White" Foreground="White">
+                                                    <TextBox.Text>
+                                                        <Binding
+                                                              Path=" "
+                                                              UpdateSourceTrigger="PropertyChanged">
+                                                        </Binding>
+                                                    </TextBox.Text>
+                                                </TextBox>
+                                                <TextBlock Background="Transparent"
+                                                     Grid.Row="1"
+                                                     FontWeight="Bold"
+                                                     Text="Descripcion: "
+                                                     Margin="10,15"
+                                                     TextWrapping="Wrap"
+                                                     FontSize="12"></TextBlock>
+                                                <TextBox
+                                                      Grid.Row="1"
+                                                      x:Name="txtbDesc"
+                                                      Margin="20 -15 40 10"
+                                                      IsReadOnly="True"
+                                                      materialDesign:HintAssist.Hint=" " Background="Transparent" CaretBrush="White" SelectionBrush="White" BorderBrush="White" Foreground="White">
+                                                    <TextBox.Text>
+                                                        <Binding
+                                                              Path=" "
+                                                              UpdateSourceTrigger="PropertyChanged">
+                                                        </Binding>
+                                                    </TextBox.Text>
+                                                </TextBox>
+                                                <Expander
+                                                    HorizontalAlignment="Stretch"
+                                                    Header="Detalles especifico" Background="#FF008506">
+                                                    <StackPanel
+                                                      Orientation="Vertical"
+                                                      TextBlock.Foreground="{DynamicResource MaterialDesignBody}"
+                                                      Margin="24,0,24,10">
+                                                        <TextBlock Background="Transparent"
+                                                     Grid.Row="2"
+                                                     FontWeight="Bold"
+                                                     Margin="10 15"
+                                                     Text="Departamento: "
+                                                     TextWrapping="Wrap"
+                                                     FontSize="12" Foreground="White"></TextBlock>
+                                                        <TextBox
+                                                      Grid.Row="2"
+                                                      x:Name="txtbDept"
+                                                      Margin="20 -15 40 0"
+                                                      IsReadOnly="True"
+                                                      materialDesign:HintAssist.Hint=" " Background="Transparent" CaretBrush="White" SelectionBrush="White" BorderBrush="White" Foreground="White">
+                                                            <TextBox.Text>
+                                                                <Binding
+                                                              Path=" "
+                                                              UpdateSourceTrigger="PropertyChanged">
+                                                                </Binding>
+                                                            </TextBox.Text>
+                                                        </TextBox>
+                                                        <TextBlock Background="Transparent"
+                                                         Grid.Row="3"
+                                                         FontWeight="Bold"
+                                                         Text="Grupo: "
+                                                         Margin="10,10"
+                                                         TextWrapping="Wrap"
+                                                         FontSize="12" Foreground="White"></TextBlock>
+                                                        <TextBox
+                                                          Grid.Row="3"
+                                                          x:Name="txtbGru"
+                                                          Margin="20 -15 40 0"
+                                                          IsReadOnly="True"
+                                                          materialDesign:HintAssist.Hint=" " Background="Transparent" CaretBrush="White" SelectionBrush="White" BorderBrush="White" Foreground="White">
+                                                            <TextBox.Text>
+                                                                <Binding
+                                                              Path=" "
+                                                              UpdateSourceTrigger="PropertyChanged">
+                                                                </Binding>
+                                                            </TextBox.Text>
+                                                        </TextBox>
+                                                        <TextBlock Background="Transparent"
+                                                     Grid.Row="4"
+                                                     FontWeight="Bold"
+                                                     Text="Sub-Grupo: "
+                                                     Margin="10,10"
+                                                     TextWrapping="Wrap"
+                                                     FontSize="12" Foreground="White"></TextBlock>
+                                                        <TextBox
+                                                      Grid.Row="4"
+                                                      x:Name="txtbSubg"
+                                                      Margin="20 -15 40 0"
+                                                      IsReadOnly="True"
+                                                      materialDesign:HintAssist.Hint=" " Background="Transparent" CaretBrush="White" SelectionBrush="White" BorderBrush="White" Foreground="White">
+                                                            <TextBox.Text>
+                                                                <Binding
+                                                              Path=" "
+                                                              UpdateSourceTrigger="PropertyChanged">
+                                                                </Binding>
+                                                            </TextBox.Text>
+                                                        </TextBox>
+                                                        <TextBlock Background="Transparent"
+                                                     Grid.Row="5"
+                                                     FontWeight="Bold"
+                                                     Text="Marca: "
+                                                     Margin="10,10"
+                                                     TextWrapping="Wrap"
+                                                     FontSize="12" Foreground="White"></TextBlock>
+                                                        <TextBox
+                                                      Grid.Row="5"
+                                                      x:Name="txtbMarca"
+                                                      Margin="20 -15 40 0"
+                                                      IsReadOnly="True"
+                                                      materialDesign:HintAssist.Hint=" " Background="Transparent" CaretBrush="White" SelectionBrush="White" BorderBrush="White" Foreground="White">
+                                                            <TextBox.Text>
+                                                                <Binding
+                                                              Path=" "
+                                                              UpdateSourceTrigger="PropertyChanged">
+                                                                </Binding>
+                                                            </TextBox.Text>
+                                                        </TextBox>
+                                                        <TextBlock Background="Transparent"
+                                                     Grid.Row="2"
+                                                     FontWeight="Bold"
+                                                     Margin="10 15"
+                                                     Text="Departamento: "
+                                                     TextWrapping="Wrap"
+                                                     FontSize="12" Foreground="White"></TextBlock>
+                                                        <TextBox
+                                                      Grid.Row="2"
+                                                      x:Name="txtbPeso"
+                                                      Margin="20 -15 40 0"
+                                                      IsReadOnly="True"
+                                                      materialDesign:HintAssist.Hint=" " Background="Transparent" CaretBrush="White" SelectionBrush="White" BorderBrush="White" Foreground="White">
+                                                            <TextBox.Text>
+                                                                <Binding
+                                                              Path=" "
+                                                              UpdateSourceTrigger="PropertyChanged">
+                                                                </Binding>
+                                                            </TextBox.Text>
+                                                        </TextBox>
+                                                        <TextBlock Background="Transparent"
+                                                     Grid.Row="2"
+                                                     FontWeight="Bold"
+                                                     Margin="10 15"
+                                                     Text="Departamento: "
+                                                     TextWrapping="Wrap"
+                                                     FontSize="12" Foreground="White"></TextBlock>
+                                                        <TextBox
+                                                      Grid.Row="2"
+                                                      x:Name="txtbStat"
+                                                      Margin="20 -15 40 0"
+                                                      IsReadOnly="True"
+                                                      materialDesign:HintAssist.Hint=" " Background="Transparent" CaretBrush="White" SelectionBrush="White" BorderBrush="White" Foreground="White">
+                                                            <TextBox.Text>
+                                                                <Binding
+                                                              Path=" "
+                                                              UpdateSourceTrigger="PropertyChanged">
+                                                                </Binding>
+                                                            </TextBox.Text>
+                                                        </TextBox>
+                                                        <TextBlock Background="Transparent"
+                                                     Grid.Row="2"
+                                                     FontWeight="Bold"
+                                                     Margin="10 15"
+                                                     Text="Departamento: "
+                                                     TextWrapping="Wrap"
+                                                     FontSize="12" Foreground="White"></TextBlock>
+                                                        <TextBox
+                                                      Grid.Row="2"
+                                                      x:Name="txtbReg"
+                                                      Margin="20 -15 40 0"
+                                                      IsReadOnly="True"
+                                                      materialDesign:HintAssist.Hint=" " Background="Transparent" CaretBrush="White" SelectionBrush="White" BorderBrush="White" Foreground="White">
+                                                            <TextBox.Text>
+                                                                <Binding
+                                                              Path=" "
+                                                              UpdateSourceTrigger="PropertyChanged">
+                                                                </Binding>
+                                                            </TextBox.Text>
+                                                        </TextBox>
+                                                        <TextBlock Background="Transparent"
+                                                     Grid.Row="2"
+                                                     FontWeight="Bold"
+                                                     Margin="10 15"
+                                                     Text="Departamento: "
+                                                     TextWrapping="Wrap"
+                                                     FontSize="12" Foreground="White"></TextBlock>
+                                                        <TextBox
+                                                      Grid.Row="2"
+                                                      x:Name="txtbPrecD"
+                                                      Margin="20 -15 40 0"
+                                                      IsReadOnly="True"
+                                                      materialDesign:HintAssist.Hint=" " Background="Transparent" CaretBrush="White" SelectionBrush="White" BorderBrush="White" Foreground="White">
+                                                            <TextBox.Text>
+                                                                <Binding
+                                                              Path=" "
+                                                              UpdateSourceTrigger="PropertyChanged">
+                                                                </Binding>
+                                                            </TextBox.Text>
+                                                        </TextBox>
+                                                        <TextBlock Background="Transparent"
+                                                     Grid.Row="2"
+                                                     FontWeight="Bold"
+                                                     Margin="10 15"
+                                                     Text="Departamento: "
+                                                     TextWrapping="Wrap"
+                                                     FontSize="12" Foreground="White"></TextBlock>
+                                                        <TextBox
+                                                      Grid.Row="2"
+                                                      x:Name="txtbCant"
+                                                      Margin="20 -15 40 0"
+                                                      IsReadOnly="True"
+                                                      materialDesign:HintAssist.Hint=" " Background="Transparent" CaretBrush="White" SelectionBrush="White" BorderBrush="White" Foreground="White">
+                                                            <TextBox.Text>
+                                                                <Binding
+                                                              Path=" "
+                                                              UpdateSourceTrigger="PropertyChanged">
+                                                                </Binding>
+                                                            </TextBox.Text>
+                                                        </TextBox>
+                                                        <TextBlock Background="Transparent"
+                                                     Grid.Row="2"
+                                                     FontWeight="Bold"
+                                                     Margin="10 15"
+                                                     Text="Departamento: "
+                                                     TextWrapping="Wrap"
+                                                     FontSize="12" Foreground="White"></TextBlock>
+                                                        <TextBox
+                                                      Grid.Row="2"
+                                                      x:Name="txtbPrecOf"
+                                                      Margin="20 -15 40 0"
+                                                      IsReadOnly="True"
+                                                      materialDesign:HintAssist.Hint=" " Background="Transparent" CaretBrush="White" SelectionBrush="White" BorderBrush="White" Foreground="White">
+                                                            <TextBox.Text>
+                                                                <Binding
+                                                              Path=" "
+                                                              UpdateSourceTrigger="PropertyChanged">
+                                                                </Binding>
+                                                            </TextBox.Text>
+                                                        </TextBox>
+                                                        <TextBlock Background="Transparent"
+                                                     Grid.Row="2"
+                                                     FontWeight="Bold"
+                                                     Margin="10 15"
+                                                     Text="Departamento: "
+                                                     TextWrapping="Wrap"
+                                                     FontSize="12" Foreground="White"></TextBlock>
+                                                        <TextBox
+                                                      Grid.Row="2"
+                                                      x:Name="txtbCodB"
+                                                      Margin="20 -15 40 0"
+                                                      IsReadOnly="True"
+                                                      materialDesign:HintAssist.Hint=" " Background="Transparent" CaretBrush="White" SelectionBrush="White" BorderBrush="White" Foreground="White">
+                                                            <TextBox.Text>
+                                                                <Binding
+                                                              Path=" "
+                                                              UpdateSourceTrigger="PropertyChanged">
+                                                                </Binding>
+                                                            </TextBox.Text>
+                                                        </TextBox>
+                                                    </StackPanel>
+                                                </Expander>
+                                                <!--<TextBlock Background="Transparent"
+                                                     Grid.Row="6"
+                                                     FontWeight="Bold"
+                                                     Text="Tipo de Producto: "
+                                                     Margin="10,10"
+                                                     TextWrapping="Wrap"
+                                                     FontSize="12"></TextBlock>-->
+                                                <!--<TextBox
+                                                      Grid.Row="6"
+                                                      x:Name="txtbPeso"
+                                                      Margin="20 -15 40 0"
+                                                      IsReadOnly="True"
+                                                      materialDesign:HintAssist.Hint=" " TextChanged="txtbDesc_TextChanged" Background="Transparent" CaretBrush="White" SelectionBrush="White" BorderBrush="White" Foreground="White">
+                                                    <TextBox.Text>
+                                                        <Binding
+                                                              Path=" "
+                                                              UpdateSourceTrigger="PropertyChanged">
+                                                        </Binding>
+                                                    </TextBox.Text>
+                                                </TextBox>-->
+                                            </StackPanel>
+                                        </Grid>
+                                        <!--<Grid Grid.Column="1" Grid.RowSpan="2" Width="224" Margin="225 0 0 0">
+                                            <StackPanel Grid.RowSpan="3">
+                                                <Image
+                                                      Height="140"
+                                                      Width="225"
+                                                      Margin="0,50,0,168"
+                                                      Stretch="UniformToFill" Grid.Row="1" Grid.RowSpan="2" />
+                                                <Button
+                                                      Grid.Row="2"
+                                                      Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"
+                                                      HorizontalAlignment="Right"
+                                                      Margin="0,-260,10,80" Background="#FF0FA416" BorderBrush="#FFF7F7F7">
+                                                    <materialDesign:PackIcon Kind="PackageVariantClosed" />
+                                                </Button>
+                                                <TextBlock Background="Transparent"
+                                                     Grid.Row="3"
+                                                     FontWeight="Bold"
+                                                     Text="Estatus de producto: "
+                                                     Margin="0, -165, 0, 140"
+                                                     TextWrapping="Wrap"
+                                                     FontSize="12"></TextBlock>
+                                                <TextBox
+                                                      x:Name="txtbStat"
+                                                      Margin="20 -150 40 100"
+                                                      IsReadOnly="True"
+                                                      materialDesign:HintAssist.Hint=" " TextChanged="txtbDesc_TextChanged" Background="Transparent" CaretBrush="White" SelectionBrush="White" BorderBrush="White" Foreground="White">
+                                                    <TextBox.Text>
+                                                        <Binding
+                                                              Path=" "
+                                                              UpdateSourceTrigger="PropertyChanged">
+                                                        </Binding>
+                                                    </TextBox.Text>
+                                                </TextBox>
+                                                <TextBlock Background="Transparent"
+                                                     Grid.Row="4"
+                                                     FontWeight="Bold"
+                                                     Text="Producto Regulado: "
+                                                     Margin="0 -130 0 100"
+                                                     TextWrapping="Wrap"
+                                                     FontSize="12"></TextBlock>
+                                                <TextBox Background="Transparent"
+                                                     Grid.Row="4"
+                                                     Name="txtbReg"
+                                                     BorderThickness="0"
+                                                     Text="No"
+                                                     IsReadOnly="True"
+                                                     Margin="10 -110 10 80"
+                                                     TextWrapping="Wrap"
+                                                     FontSize="12"
+                                                     BorderBrush="#1D7F31"></TextBox>
+                                                <TextBlock Background="Transparent"
+                                                     Grid.Row="5"
+                                                     FontWeight="Bold"
+                                                     Text="Precio ($): "
+                                                     Margin="0 -90 0 60"
+                                                     TextWrapping="Wrap"
+                                                     FontSize="12"></TextBlock>
+                                                <TextBox Background="Transparent"
+                                                     Grid.Row="5"
+                                                     Name="txtbPrecD"
+                                                     BorderThickness="0"
+                                                     Text="1.02"
+                                                     IsReadOnly="True"
+                                                     Margin="10 -70 10 40"
+                                                     TextWrapping="Wrap"
+                                                     FontSize="12"
+                                                     BorderBrush="#1D7F31"></TextBox>
+                                                <TextBlock Background="Transparent"
+                                                     Grid.Row="6"
+                                                     FontWeight="Bold"
+                                                     Text="Cantidad: "
+                                                     Margin="0 -50 0 20"
+                                                     TextWrapping="Wrap"
+                                                     FontSize="12"></TextBlock>
+                                                <TextBox Background="Transparent"
+                                                     Grid.Row="6"
+                                                     Name="txtbCant"
+                                                     BorderThickness="0"
+                                                     Text="50"
+                                                     IsReadOnly="True"
+                                                     Margin="10 -30 10 0"
+                                                     TextWrapping="Wrap"
+                                                     FontSize="12"
+                                                     BorderBrush="#1D7F31"></TextBox>
+                                            </StackPanel>
+                                            <StackPanel
+                                                  HorizontalAlignment="Right"
+                                                  Grid.Row="3"
+                                                  Orientation="Horizontal"
+                                                  Margin="0,400,8,0">
+                                                <materialDesign:PopupBox
+                                                    Style="{DynamicResource MaterialDesignToolPopupBox}"
+                                                    Padding="2 0 2 0">
+                                                    <StackPanel>
+                                                        <Button
+                                                        Content="More" />
+                                                        <Button
+                                                        Content="Options" />
+                                                    </StackPanel>
+                                                </materialDesign:PopupBox>
+                                            </StackPanel>
+                                        </Grid>-->
+                                    </Grid>
+                                </materialDesign:Card>
+                            </Grid>
+                            <!--<Grid Grid.Row="0" Margin="0,20" Height="120" Grid.RowSpan="2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="120"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="4*"/>
+                                </Grid.ColumnDefinitions>
+                            </Grid>
+                            <Grid Grid.Row="1" Margin="0,100,10,-400" Height="400" Grid.RowSpan="2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="450"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid Grid.Width="220" Margin="0,0,5,10" Grid.Column="1">
+                                    <materialDesign:Card
+                                      Background="#FF228B22"
+                                      Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                                      Padding="0"
+                                      Width="180"
+                                      Margin="-2,15,42,145"
+                                      Height="280">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Grid.Row="0" FontSize="17" FontWeight="Bold" Margin="10 10 16 0" Style="{StaticResource MaterialDesignHeadline5TextBlock}"> Precio Producto
+                                            </TextBlock>
+                                            <Separator Grid.Row="1" Style="{StaticResource MaterialDesignLightSeparator}" Margin="0, 0, 0, 0" Background="#FFF7F7F7"/>
+                                            <DatePicker Grid.Row="2"
+                                              Width="110"
+                                              Height="35"
+                                              Margin="0, 10, 0, 0"
+                                              materialDesign:HintAssist.Hint="Fecha Inicio"
+                                              Foreground="White"
+                                              Style="{StaticResource MaterialDesignOutlinedDatePicker}" BorderBrush="#FFF7F7F7" Background="ForestGreen" />
+                                            <DatePicker Grid.Row="3"
+                                              Width="110"
+                                              Height="35"
+                                              Margin="0,10"
+                                              materialDesign:HintAssist.Hint="Fecha Inicio"
+                                              Foreground="White"
+                                              Style="{StaticResource MaterialDesignOutlinedDatePicker}" BorderBrush="White" />
+                                            <TextBlock Grid.Row="4"
+                                              Background="Transparent"
+                                              VerticalAlignment="Top"
+                                              Height="40"
+                                              Margin="10,0"
+                                              FontWeight="Bold"
+                                              Foreground="White"
+                                              TextWrapping="Wrap"
+                                              Text="Precio Oferta:"
+                                              IsEnabled="True" />
+                                            <TextBox Background="Transparent"
+                                                Grid.Row="4"
+                                                Name="txtbPrecOf"
+                                                BorderThickness="0"
+                                                Text="50"
+                                                IsReadOnly="True"
+                                                Margin="10 20 10 0"
+                                                TextWrapping="Wrap"
+                                                FontSize="12"
+                                                BorderBrush="#1D7F31"></TextBox>
+                                            <TextBlock Grid.Row="5" Background="Transparent"
+                                                FontWeight="Bold"
+                                                Text="Codigo de barra: "
+                                                Margin="10,0"
+                                                Foreground="White"
+                                                TextWrapping="Wrap"
+                                                FontSize="12"></TextBlock>
+                                            <TextBox Background="Transparent"
+                                                Grid.Row="5"
+                                                Name="txtbCodB"
+                                                BorderThickness="0"
+                                                Text="12345678"
+                                                IsReadOnly="True"
+                                                Margin="10 20 10 0"
+                                                TextWrapping="Wrap"
+                                                FontSize="12"
+                                                BorderBrush="#1D7F31"></TextBox>
+                                        </Grid>
+                                    </materialDesign:Card>
+                                    <StackPanel>
+                                        <Button
+                                          Style="{StaticResource MaterialDesignFloatingActionAccentButton}"
+                                          Margin="0,330,35,0"
+                                          materialDesign:ButtonProgressAssist.IsIndicatorVisible="True"
+                                          materialDesign:ButtonProgressAssist.Value="60"
+                                          Content="{materialDesign:PackIcon DotsHorizontal}" BorderBrush="#FF304FFE" Background="#FF0FA416" />
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>-->
+                        </Grid>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Ofertas" />
+                <TabItem Header="Prod. Regulados" />
+            </TabControl>
+        </Grid>
+
+        <Grid Grid.Row="1" AutomationProperties.Name="barraIzq" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="LightGray" Offset="1"/>
+                    <GradientStop Color="#FFE6E6E6"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.Effect>
+                <DropShadowEffect BlurRadius="20" Color="#1D7F31" RenderingBias="Quality" ShadowDepth="1"/>
+            </Grid.Effect>
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsChecked, ElementName=BtnHide}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <Grid Background="#C8E6C9" Grid.ColumnSpan="2">
+                <Image x:Name="logo" Source="http://100.100.2.131:8300/Images/logo.png" Width="90" Height="90" Margin="0,0,0,300" Effect="{DynamicResource MaterialDesignShadowDepth3}"/>
+                <Button VerticalAlignment="Center" FontFamily="WS Simple Gallifreyan" Foreground="#1B5E20" Background="#C8E6C9" BorderBrush="#C8E6C9" materialDesign:ShadowAssist.ShadowDepth="Depth0" AutomationProperties.Name="BtnHide">
+                    <Grid Width="120">
+                        <TextBlock HorizontalAlignment="Center" Text="HABLADORES RIO"/>
+                    </Grid>
+                </Button>
+            </Grid>
+
+            <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
+                <Button Margin="10" Background="#1D7F31" BorderBrush="#A5D6A7" Visibility="Collapsed">
+                    <Grid Width="150">
+                        <materialDesign:PackIcon Kind="ViewDashboard" VerticalAlignment="Center"/>
+                        <TextBlock HorizontalAlignment="Center" Text="DASHBOARD" FontFamily="Champagne &amp; Limousines"/>
+                    </Grid>
+                </Button>
+                <Button Margin="10" Background="#1D7F31" Click="Button_Click_3" BorderBrush="#A5D6A7" Visibility="Visible">
+                    <Grid Width="150">
+                        <materialDesign:PackIcon Kind="ContentPaste" VerticalAlignment="Center"/>
+                        <TextBlock HorizontalAlignment="Center" Text="VER OFERTA" FontFamily="Champagne &amp; Limousines"/>
+                    </Grid>
+                </Button>
+                <Button Margin="10" Background="#1D7F31" Click="Button_Click_Bimoneda" BorderBrush="#A5D6A7" Visibility="Visible">
+                    <Grid Width="150">
+                        <materialDesign:PackIcon Kind="ContentPaste" VerticalAlignment="Center"/>
+                        <TextBlock HorizontalAlignment="Center" Text="PROD. BIMONEDA" FontFamily="Champagne &amp; Limousines"/>
+                    </Grid>
+                </Button>
+                <Button Margin="10" Background="#1D7F31" Click="RefreshHabladores_Click" BorderBrush="#A5D6A7" Visibility="Visible">
+                    <Grid Width="150">
+                        <materialDesign:PackIcon Kind="BoxSearch" VerticalAlignment="Center"/>
+                        <TextBlock HorizontalAlignment="Center" Text=" ACT. HABLADORES" FontFamily="Champagne &amp; Limousines"/>
+                    </Grid>
+                </Button>
+                <Button Margin="10" Background="#1D7F31" BorderBrush="#A5D6A7" Click="Button_Click_1">
+                    <Grid Width="150">
+                        <materialDesign:PackIcon Kind="Output" VerticalAlignment="Center"/>
+                        <TextBlock HorizontalAlignment="Center" Text="SALIR" FontFamily="Champagne &amp; Limousines"/>
+                    </Grid>
+                </Button>
+
+                <Button Margin="10" Background="#1D7F31" BorderBrush="#A5D6A7" Visibility="Collapsed">
+                    <Grid Width="150">
+                        <materialDesign:PackIcon Kind="Account" VerticalAlignment="Center"/>
+                        <TextBlock HorizontalAlignment="Center" Text="PERFIL" FontFamily="Champagne &amp; Limousines"/>
+                    </Grid>
+                </Button>
+
+                <Button Margin="10" Background="#1D7F31" BorderBrush="#A5D6A7" Visibility="Collapsed">
+                    <Grid Width="150">
+                        <materialDesign:PackIcon Kind="Settings" VerticalAlignment="Center"/>
+                        <TextBlock HorizontalAlignment="Center" Text="CONFIGURACIÓN" FontFamily="Champagne &amp; Limousines"/>
+                    </Grid>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <Grid x:Name="GridBarraTitulo" Grid.ColumnSpan="2" Background="#1D7F31" MouseDown="GridBarraTitulo_MouseDown">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="10,0">
+                <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Width="25" Height="25" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White">
+                    <materialDesign:PackIcon Kind="Bell"/>
+                </Button>
+                <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Click="Button_Click_2" Width="25" Height="25" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White">
+                    <materialDesign:PackIcon Kind="WindowMinimize"/>
+                </Button>
+                <Button x:Name="ButtonFechar" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Width="25" Height="25" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White" Click="ButtonFechar_Click">
+                    <materialDesign:PackIcon Kind="Power"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+    </Grid>
+</Window>
